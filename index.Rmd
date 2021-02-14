@@ -1,0 +1,24 @@
+---
+title: "test"
+author: "Dionne"
+date: "2/10/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(spotifyr)
+
+```
+```{r}
+zeros <- get_playlist_audio_features("", "6dv5FbNRVlQelteqnNDFTe")
+eighties <- get_playlist_audio_features("", "23xQYspGsaIsztrKTHM8cN")
+```
+```{r}
+combined <-
+  bind_rows(
+    zeros %>% mutate(category = "Zeros")
+  )
+  
+```
+
