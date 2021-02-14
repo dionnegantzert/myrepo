@@ -12,24 +12,34 @@ For many people, Star Wars has been one of the greatest movie series of all time
 
 I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
 
-The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. 
+The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. Below you can find an overview of the selection.
+
+| John Williams  | Kevin Kiner | Ludwig Goransson |
+| ------------- | ------------- | ------------- |
+| 5x The Rise of Sky Walker | 10x Clone Wars I | 5x The Mandalorian Ch1 |
+| 5x The Last Jedi | 10x Clone Wars II | 5x The Mandalorian Ch2 |
+| 5x The Force Awakens | 10x Clone Wars III| 5x The Mandalorian Ch3 |
+| 5x The Phantom Menace | 10x Clone Wars IV | 5x The Mandalorian Ch4 |
+| 5x Attack of the Clones || 5x The Mandalorian Ch5 |
+| 5x Revenge of the Sith || 5x The Mandalorian Ch6 |
+| 5x A New Hope || 5x The Mandalorian Ch7 |
+| 5x The Empires Strikes Back|| 5x The Mandalorian Ch8 |
 
 “Dual of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
 
-## Data visualisation
+## Data visualization
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+# Loading in the libraries
 library(tidyverse)
 library(spotifyr)
 
-playlist <- get_playlist_audio_features(, "0kojyfPUkAer4jsf4RSzDH")
+# My three different data sets
 williams <- get_playlist_audio_features(, "2tHo38FRHxerzbD1b8gSFE")
 kiner <- get_playlist_audio_features(, "5Yx2gl5bGRaYV6IbS9SRig")
 goransson <- get_playlist_audio_features(, "1pCbj5RobyHokjVvlRe9xl")
-```
 
-
-```{r}
+# Combining the data sets
 combined <-
   bind_rows(
     williams %>% mutate(category = "John Williams"),
@@ -37,46 +47,7 @@ combined <-
     goransson %>% mutate(category = "Ludwig Goransson")
   )
 
-```
-
-```{r}
-combined %>%
-    ggplot(                     # Set up the plot.
-    aes(
-      x = valence,
-      y = energy,
-      size = loudness,
-      colour = mode
-    )
-  ) +
-  geom_point() +
-  facet_wrap(~category)
-```
-```{r}
-combined %>%
-    ggplot(                     # Set up the plot.
-    aes(
-      x = speechiness,
-      y = track.popularity,
-      color = loudness
-    )
-  ) +
-  geom_point() +
-  facet_wrap(~category)
-```
-```{r}
-combined %>%
-    ggplot(                 
-    aes(
-      x = instrumentalness,
-      y = acousticness,
-      color = "pink"
-    )
-  ) +
-  geom_point() +
-  facet_wrap(~category)
-```
-```{r}
+# Plot acousticness vs instrumentalness, by composer
 combined %>%
     ggplot(                 
     aes(
@@ -89,5 +60,28 @@ combined %>%
   geom_point() +
   ggtitle( "Comparing composers their acousticness vs instrumentalness")
 ```
+
+In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the composer, as you can see in the legend. I have tried to make my visualization as readable as possible, by not exaggerating the amount of data or moving the legend. I think the colors speak for themselves. I have not yet maximized the amount of data displayed in my visualization, because for now I didn't want to. I first wanted to analyze the similarities and differences between the composers, since the composers have a lot in common. The graph above is one of the few notable differences I could find between the composers. As you can see, Williams uses a lot more acousticness and instrumentalness as compared to Kiner and Goransson. This finding could be very important for my research since it is one of the few huge differences between the composers. Williams choice for acousticness and instrumentalness stands out in the Star Wars franchise. Kiner and Goransson vary in their choice to use acoustics. Overall, the composers of the Star Wars music use a lot of instrumental music. 
+
+One other result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
+
+```{r, echo = FALSE}
+combined %>%
+    ggplot(                     # Set up the plot.
+    aes(
+      x = track.popularity,
+      fill = "red"
+    )
+  ) +
+  geom_histogram(binwidth = 10) +
+  facet_wrap(~category) +
+  ggtitle("Popularity of the songs per composer")
+```
+
+I think this visualization needs more attention regarding aesthetics. Maybe I can combine the three graphs into one, but I would love to get your opinion on this. 
+
+In the next weeks I want to take a look at genre. Genre is not a feature in the audio features, so I have to search for a method to combine genre into my data set. As stated in the introduction, Goransson used more of a western style of music, and I think this will stand out from Williams and Kiner. Therefore I think genre is a valuable addition to this data set. 
+
+
 
 
