@@ -1,13 +1,13 @@
 ---
-title: "Star Wars composers analysis"
+title: "Star Wars Composers Analysis"
 author: "Dionne Gantzert"
 date: "2/15/2021"
 output: html_document
 ---
-# Corpus
+## Corpus
 You can find the exact corpus on: https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w
 
-# Introduction
+## Introduction
 For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
 
 I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
@@ -16,7 +16,7 @@ The corpus tries to cover every movie or episode, but since a movie contains mor
 
 “Dual of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
 
-# Data visualisation
+## Data visualisation
 
 ```{r}
 library(tidyverse)
