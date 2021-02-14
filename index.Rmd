@@ -1,24 +1,92 @@
 ---
-title: "test"
-author: "Dionne"
-date: "2/10/2021"
+title: "Star Wars composers analysis"
+author: "Dionne Gantzert"
+date: "2/15/2021"
 output: html_document
 ---
+# Corpus
+You can find the exact corpus on: https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w
+
+# Introduction
+For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
+
+I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
+
+The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. 
+
+“Dual of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
+
 
 ```{r}
 library(tidyverse)
 library(spotifyr)
 
+playlist <- get_playlist_audio_features(, "0kojyfPUkAer4jsf4RSzDH")
+williams <- get_playlist_audio_features(, "2tHo38FRHxerzbD1b8gSFE")
+kiner <- get_playlist_audio_features(, "5Yx2gl5bGRaYV6IbS9SRig")
+goransson <- get_playlist_audio_features(, "1pCbj5RobyHokjVvlRe9xl")
 ```
-```{r}
-zeros <- get_playlist_audio_features("", "6dv5FbNRVlQelteqnNDFTe")
-eighties <- get_playlist_audio_features("", "23xQYspGsaIsztrKTHM8cN")
-```
+
+
 ```{r}
 combined <-
   bind_rows(
-    zeros %>% mutate(category = "Zeros")
+    williams %>% mutate(category = "John Williams"),
+    kiner %>% mutate(category = "Kevin Kiner"),
+    goransson %>% mutate(category = "Ludwig Goransson")
   )
-  
+
 ```
+
+```{r}
+combined %>%
+    ggplot(                     # Set up the plot.
+    aes(
+      x = valence,
+      y = energy,
+      size = loudness,
+      colour = mode
+    )
+  ) +
+  geom_point() +
+  facet_wrap(~category)
+```
+```{r}
+combined %>%
+    ggplot(                     # Set up the plot.
+    aes(
+      x = speechiness,
+      y = track.popularity,
+      color = loudness
+    )
+  ) +
+  geom_point() +
+  facet_wrap(~category)
+```
+```{r}
+combined %>%
+    ggplot(                 
+    aes(
+      x = instrumentalness,
+      y = acousticness,
+      color = "pink"
+    )
+  ) +
+  geom_point() +
+  facet_wrap(~category)
+```
+```{r}
+combined %>%
+    ggplot(                 
+    aes(
+      x = instrumentalness,
+      y = acousticness,
+      size = 1,
+      color = category
+    )
+  ) +
+  geom_point() +
+  ggtitle( "Comparing composers their acousticness vs instrumentalness")
+```
+
 
