@@ -16,6 +16,7 @@ The corpus tries to cover every movie or episode, but since a movie contains mor
 
 “Dual of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
 
+# Data visualisation
 
 ```{r}
 library(tidyverse)
