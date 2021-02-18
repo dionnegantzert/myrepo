@@ -53,8 +53,8 @@ The corpus tries to cover every movie or episode, but since a movie contains mor
 
 ### Data visualization
 
-#### Chart A
-```{r, echo = FALSE, message = FALSE}
+#### Visualization No. 1
+```{r, echo = FALSE, message = FALSE, fig.align='center'}
 # Loading in the libraries
 library(tidyverse)
 library(spotifyr)
@@ -97,23 +97,35 @@ combined %>%
   )
 ```
 
-#### Chart B
 In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the composer, as you can see in the legend. I have tried to make my visualization as readable as possible, by not exaggerating the amount of data or moving the legend. I think the colors speak for themselves. I have not yet maximized the amount of data displayed in my visualization, because for now I didn't want to. I first wanted to analyze the similarities and differences between the composers, since the composers have a lot in common. The graph above is one of the few notable differences I could find between the composers. As you can see, Williams uses a lot more acousticness and instrumentalness as compared to Kiner and Goransson. This finding could be very important for my research since it is one of the few huge differences between the composers. Williams choice for acousticness and instrumentalness stands out in the Star Wars franchise. Kiner and Goransson vary in their choice to use acoustics. Overall, the composers of the Star Wars music use a lot of instrumental music. 
 
+### Vizualization No. 2
+#### This still needs some work
 One other result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center'}
 combined %>%
     ggplot(                     # Set up the plot.
     aes(
       x = track.popularity,
-      fill = "red"
+      fill = category
     )
   ) +
-  geom_histogram(binwidth = 10) +
-  facet_wrap(~category) +
-  ggtitle("Popularity of the songs per composer")
+  geom_histogram(binwidth = 10, position = "dodge") +
+  theme_light() +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  ) +
+  labs(
+    x = "Popularity",
+    y = "Amount of songs",
+    title = "Comparing track popularity"
+  )
 ```
+
 
 I think this visualization needs more attention regarding aesthetics. Maybe I can combine the three graphs into one, but I would love to get your opinion on this. 
 
