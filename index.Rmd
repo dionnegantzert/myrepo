@@ -11,6 +11,9 @@ output:
 body, h1, h2, h3, h4 {
     font-family: "Bookman", serif;
 }
+.navbar {
+  background-color:darkviolet;
+}
 
 body {
     color: #333333;
@@ -73,28 +76,44 @@ combined <-
   )
 
 # Plot acousticness vs instrumentalness, by composer
+
 combined %>%
-    ggplot(                 
+ ggplot(                          # Set up the plot.
     aes(
       x = instrumentalness,
       y = acousticness,
       size = track.popularity,
-      color = category
+      colour = danceability,
+      label = track.name           # Labels will be interactively visible.
     )
   ) +
-  geom_point() +
-  theme_light() +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
+  geom_point() +                   # Scatter plot.
+  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
+  facet_wrap(~category) +           # Separate charts per country.
+  scale_x_continuous(              # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
+    minor_breaks = NULL            # Remove 'minor' grid-lines.
   ) +
-  labs(
+  scale_y_continuous(              # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_viridis_c(          # Use the cividis palette
+    option = "A",                  # Qualitative set.
+    alpha = 0.8,                   # Include some transparency
+    guide = "none"
+  ) +
+  scale_size_continuous(           # Fine-tune the sizes of each point.
+    guide = "none"                 # Remove the legend for size.
+  ) +
+  theme_light() +                  # Use a simpler theme.
+  labs(                            # Make the titles nice.
     x = "Instrumentalness",
-    y = "Acousticness",
-    title = "Comparing composers their acousticness and instrumentalness"
-  )
+    y = "Acousticness"
+  ) +
+  theme(strip.background = element_rect(fill="#660066"))
 ```
 
 In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the composer, as you can see in the legend. I have tried to make my visualization as readable as possible, by not exaggerating the amount of data or moving the legend. I think the colors speak for themselves. I have not yet maximized the amount of data displayed in my visualization, because for now I didn't want to. I first wanted to analyze the similarities and differences between the composers, since the composers have a lot in common. The graph above is one of the few notable differences I could find between the composers. As you can see, Williams uses a lot more acousticness and instrumentalness as compared to Kiner and Goransson. This finding could be very important for my research since it is one of the few huge differences between the composers. Williams choice for acousticness and instrumentalness stands out in the Star Wars franchise. Kiner and Goransson vary in their choice to use acoustics. Overall, the composers of the Star Wars music use a lot of instrumental music. 
@@ -103,15 +122,29 @@ In the visualization above you can see the acousticness and instrumentalness plo
 #### This still needs some work
 One other result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
 
+```{r, echo = FALSE}
+compare_mean <- combined %>%
+        group_by(category) %>%
+        summarise(meanpop = mean(track.popularity))
+compare_mean
+
+```
+
+
 ```{r, echo = FALSE, fig.align='center'}
+
 combined %>%
-    ggplot(                     # Set up the plot.
+  ggplot(                     # Set up the plot.
     aes(
       x = track.popularity,
       fill = category
     )
   ) +
-  geom_histogram(binwidth = 10, position = "dodge") +
+  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
+  geom_histogram(binwidth = 10, position = "dodge", alpha = 0.7) +
+  geom_vline(xintercept = 15.55, linetype = "dashed", color = "#660066", size = 1) +
+  geom_vline(xintercept = 30.65, linetype = "dashed", color = "#f6a97a", size = 1) +
+  geom_vline(xintercept = 36.75, linetype = "dashed", color = "#f6a97a", size = 1) +
   theme_light() +
   theme(
     text = element_text(family = "Bookman"),
@@ -123,7 +156,8 @@ combined %>%
     x = "Popularity",
     y = "Amount of songs",
     title = "Comparing track popularity"
-  )
+  ) 
+
 ```
 
 
@@ -139,5 +173,47 @@ In the next weeks I want to take a look at genre. Genre is not a feature in the 
 
 ### Corpus
 You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w)
+
+```{r}
+combined %>%
+ ggplot(                          # Set up the plot.
+    aes(
+      x = valence,
+      y = energy,
+      size = track.popularity,
+      colour = danceability,
+      label = track.name           # Labels will be interactively visible.
+    )
+  ) +
+  geom_point() +                   # Scatter plot.
+  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
+  facet_wrap(~category) +           # Separate charts per country.
+  scale_x_continuous(              # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
+    minor_breaks = NULL            # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(              # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_viridis_c(          # Use the cividis palette
+    option = "A",                  # Qualitative set.
+    alpha = 0.8,                   # Include some transparency
+    guide = "none"
+  ) +
+  scale_size_continuous(           # Fine-tune the sizes of each point.
+    guide = "none"                 # Remove the legend for size.
+  ) +
+  theme_light() +                  # Use a simpler theme.
+  labs(                            # Make the titles nice.
+    x = "Valence",
+    y = "Energy"
+  ) +
+  theme(strip.background = element_rect(fill="#660066"))
+
+```
+
 
 
