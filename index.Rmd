@@ -1,7 +1,7 @@
 ---
 title: "Star Wars Composers Analysis"
 author: "Dionne Gantzert"
-date: "2/15/2021"
+date: "2/22/2021"
 output:
   flexdashboard::flex_dashboard:
     storyboard: true
@@ -52,15 +52,19 @@ The corpus tries to cover every movie or episode, but since a movie contains mor
 
 
 
-“Dual of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
+“Duel of the fates” is a very typical Star Wars movie song, the loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
 
-### Data visualization
+You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w).
 
-#### Visualization No. 1
+
+### Star Wars: Episode IV: A New Graph
+
+#### Comparing the Composers Regarding Acousticness, Instrumentalness, Danceability and Popularity
 ```{r, echo = FALSE, message = FALSE, fig.align='center'}
 # Loading in the libraries
 library(tidyverse)
 library(spotifyr)
+library(plotly)
 
 # My three different data sets
 williams <- get_playlist_audio_features(, "2tHo38FRHxerzbD1b8gSFE")
@@ -77,7 +81,7 @@ combined <-
 
 # Plot acousticness vs instrumentalness, by composer
 
-combined %>%
+tmpgraph <- combined %>%
  ggplot(                          # Set up the plot.
     aes(
       x = instrumentalness,
@@ -114,21 +118,14 @@ combined %>%
     y = "Acousticness"
   ) +
   theme(strip.background = element_rect(fill="#660066"))
+
+ggplotly(tmpgraph)
 ```
 
-In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the composer, as you can see in the legend. I have tried to make my visualization as readable as possible, by not exaggerating the amount of data or moving the legend. I think the colors speak for themselves. I have not yet maximized the amount of data displayed in my visualization, because for now I didn't want to. I first wanted to analyze the similarities and differences between the composers, since the composers have a lot in common. The graph above is one of the few notable differences I could find between the composers. As you can see, Williams uses a lot more acousticness and instrumentalness as compared to Kiner and Goransson. This finding could be very important for my research since it is one of the few huge differences between the composers. Williams choice for acousticness and instrumentalness stands out in the Star Wars franchise. Kiner and Goransson vary in their choice to use acoustics. Overall, the composers of the Star Wars music use a lot of instrumental music. 
 
-### Vizualization No. 2
-#### This still needs some work
-One other result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
+In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the danceability, with the lighter colors having a higher danceability score. The size of the dots matches the popularity of the track. The bigger the dot, the popular the track is. As you can see in the visualization, the music of John Williams stands out as compared to the other two composers, in three ways. First, Williams uses a lot of instrumental and acoustic music, while the music of Kiner and Goransson varies more in acousticness. All of the three composers have a high instrumentalness score, but the acousticness score varies. Second, William's music has a lower danceability score than Kiner's and Goransson's. William's tracks are darker, indicating lower danceability scores. The last way William stands out as compared to the other two composers is the popularity of the tracks. The size of the dots in Williams graph is the only one with really small dots. 
 
-```{r, echo = FALSE}
-compare_mean <- combined %>%
-        group_by(category) %>%
-        summarise(meanpop = mean(track.popularity))
-compare_mean
-
-```
+One result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
 
 
 ```{r, echo = FALSE, fig.align='center'}
@@ -146,74 +143,61 @@ combined %>%
   geom_vline(xintercept = 30.65, linetype = "dashed", color = "#f6a97a", size = 1) +
   geom_vline(xintercept = 36.75, linetype = "dashed", color = "#f6a97a", size = 1) +
   theme_light() +
+  labs(
+    x = "Popularity",
+    y = "Amount of songs",
+    title = "Comparing track popularity"
+  ) +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
   theme(
     text = element_text(family = "Bookman"),
     title = element_text(color = "gray25"),
     plot.caption = element_text(color = "gray30"),
     plot.subtitle = element_text(size = 12)
-  ) +
-  labs(
-    x = "Popularity",
-    y = "Amount of songs",
-    title = "Comparing track popularity"
-  ) 
+  )
 
 ```
 
+### Star Wars: Episode VIII: The Last Visualization
+#### Kevin Kiner's change of instruments
 
-I think this visualization needs more attention regarding aesthetics. Maybe I can combine the three graphs into one, but I would love to get your opinion on this. 
+```{r, echo=FALSE, fig.align='center'}
+library(compmus)
 
-In the next weeks I want to take a look at genre. Genre is not a feature in the audio features, so I have to search for a method to combine genre into my data set. As stated in the introduction, Goransson used more of a western style of music, and I think this will stand out from Williams and Kiner. Therefore I think genre is a valuable addition to this data set. 
+test2 <-
+  get_tidy_audio_analysis("1fqsyRQVJReNyGNj1xZQX9") %>% 
+  select(segments) %>%
+  unnest(segments) %>%
+  select(start, duration, pitches)
 
-
-
-
-.
-
-
-### Corpus
-You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w)
-
-```{r}
-combined %>%
- ggplot(                          # Set up the plot.
+test2k <- test2 %>%
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
+  compmus_gather_chroma() %>% 
+  ggplot(
     aes(
-      x = valence,
-      y = energy,
-      size = track.popularity,
-      colour = danceability,
-      label = track.name           # Labels will be interactively visible.
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
     )
   ) +
-  geom_point() +                   # Scatter plot.
-  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
-  facet_wrap(~category) +           # Separate charts per country.
-  scale_x_continuous(              # Fine-tune the x axis.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
-    minor_breaks = NULL            # Remove 'minor' grid-lines.
-  ) +
-  scale_y_continuous(              # Fine-tune the y axis in the same way.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),
-    minor_breaks = NULL
-  ) +
-  scale_colour_viridis_c(          # Use the cividis palette
-    option = "A",                  # Qualitative set.
-    alpha = 0.8,                   # Include some transparency
-    guide = "none"
-  ) +
-  scale_size_continuous(           # Fine-tune the sizes of each point.
-    guide = "none"                 # Remove the legend for size.
-  ) +
-  theme_light() +                  # Use a simpler theme.
-  labs(                            # Make the titles nice.
-    x = "Valence",
-    y = "Energy"
-  ) +
-  theme(strip.background = element_rect(fill="#660066"))
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Kevin Kiner: Trace & Rafa") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+plot(test2k)
 
 ```
 
+In the visualization above, you can see the chromagram of Kevin Kiner's "Trace & Rafa" from the Clone Wars series. A lot of different chroma values are used. At the start of the track, mostly A#, G# and C are used. Further into the track you can see that this switches, A#, G# and C are used fewer and G and F start to join. Something that stands out is the many different chroma values. At first, the song is very calm, contains high tones and has a slow rhythm. Then, after around 100 seconds, the music starts to become louder, with use of 'heavier' instruments. This change is clearly noticeable in the chromagram. 
 
-
+I still have to work this out in more detail. I am not quite sure if this chromagram is useful for my analysis. I have to give this page more thought. 
