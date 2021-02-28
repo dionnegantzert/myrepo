@@ -26,6 +26,165 @@ pre {
 }
 </style>
 
+### New tab
+#### Comparing the Composers typical songs
+In this section we will look into different self-similarity matrices of three typical songs. The first track will be "The Throne Room and End Title" by John Williams. The second track will be "Ahsoka and the Martez Sisters" by Kevin Kiner and the last track will be "Mando Rescue" by Ludwig Goransson.
+
+#### John Williams: The Throne Room and End Title
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(spotifyr)
+library(plotly)
+library(compmus)
+```
+```{r, echo = FALSE, message = FALSE, fig.align='center'}
+throne <-
+  get_tidy_audio_analysis("0KOYV2jgRZWLcLI94kiscs") %>%
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  throne %>%
+    compmus_self_similarity(pitches, "aitchison") %>%
+    mutate(d = d / max(d), type = "Chroma"),
+  throne %>%
+    compmus_self_similarity(timbre, "euclidean") %>%
+    mutate(d = d / max(d), type = "Timbre")
+) %>%
+  mutate() %>%
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(guide = "none", option = "magma") +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+In this graph you can see a clear difference between the self-similarity of the chroma features and the timbre features of "The Throne Room and End Title" by John Williams. The lighter the colors are, the more similar the features. In this graph it is clear that the chroma features around the 200 are more similar than the others. Regarding timbre, not only the 200 but also around 70 it is noticeable that the features are more similar. 
+
+#### Kevin Kiner: Ahsoka and the Martez Sisters
+```{r, echo = FALSE, message = FALSE, fig.align='center'}
+jedi_temple <-
+  get_tidy_audio_analysis("0hd8rk3WUINYVbdfsu1CqH") %>%
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  jedi_temple %>%
+    compmus_self_similarity(pitches, "aitchison") %>%
+    mutate(d = d / max(d), type = "Chroma"),
+  jedi_temple %>%
+    compmus_self_similarity(timbre, "euclidean") %>%
+    mutate(d = d / max(d), type = "Timbre")
+) %>%
+  mutate() %>%
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(guide = "none", option = "magma") +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+In this graph you can see a clear difference between the self-similarity of the chroma features and the timbre features of "Ahsoka and the Martez Sisters" by Kevin Kiner. The lighter the colors are, the more similar the features. Regarding the chroma features you see a huge difference between this track and the track by Williams. Where Williams chroma features were more similar around the 200, here the chroma features are highly similar to each other in general. Usually a self-similarity matrix is very similar in a few points but here in this song we can see that the chroma features are much alike. Regarding timbre, this looks almost the same as Williams' track above. Except it is more smooth. **Why?**
+
+#### Ludwig Goransson: Mando Rescue
+```{r, echo = FALSE, message = FALSE, fig.align='center'}
+mando_rescue <-
+  get_tidy_audio_analysis("2KDvhi03HTPCWXNMPvLtr9") %>%
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  mando_rescue %>%
+    compmus_self_similarity(pitches, "aitchison") %>%
+    mutate(d = d / max(d), type = "Chroma"),
+  mando_rescue %>%
+    compmus_self_similarity(timbre, "euclidean") %>%
+    mutate(d = d / max(d), type = "Timbre")
+) %>%
+  mutate() %>%
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(guide = "none", option = "magma") +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+In this graph you can see a clear difference between the self-similarity of the chroma features and the timbre features of "Mando Rescue" by Ludwig Goransson. The lighter the colors are, the more similar the features. The first noticeable difference is that this graph is much smoother than the other two tracks by Kiner and Williams. **Why? What does this mean?**. Another difference is that with Williams' track the chroma features are more similar around 200, while here it is around 10 and 120. It is the exact opposite of Williams' track. **How do I explain this well?**
+
+
+
 ### A long time ago, in a galaxy far, far away...
 #### Introduction
 For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
@@ -201,3 +360,4 @@ plot(test2k)
 In the visualization above, you can see the chromagram of Kevin Kiner's "Trace & Rafa" from the Clone Wars series. A lot of different chroma values are used. At the start of the track, mostly A#, G# and C are used. Further into the track you can see that this switches, A#, G# and C are used fewer and G and F start to join. Something that stands out is the many different chroma values. At first, the song is very calm, contains high tones and has a slow rhythm. Then, after around 100 seconds, the music starts to become louder, with use of 'heavier' instruments. This change is clearly noticeable in the chromagram. 
 
 I still have to work this out in more detail. I am not quite sure if this chromagram is useful for my analysis. I have to give this page more thought. 
+
