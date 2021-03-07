@@ -164,7 +164,7 @@ twenty_five2 <-
 
 ```
 
-```{r, echo = FALSE, message = FALSE, figures-side, fig.show="hold", out.width="70%"}
+```{r, echo = FALSE, message = FALSE, figures-side, fig.show="hold", out.width="50%"}
 twenty_five2 %>% 
   compmus_match_pitch_template(
     key_templates,         # Change to chord_templates if descired
