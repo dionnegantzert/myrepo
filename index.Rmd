@@ -43,8 +43,317 @@ combined <-
     kiner %>% mutate(category = "Kevin Kiner"),
     goransson %>% mutate(category = "Ludwig Goransson")
   )
+
 ```
-### A new tab
+
+### A new tab: Kevin Kiner tempograms
+```{r, echo = FALSE, message = FALSE}
+# Cafe Corescant by Kevin Kiner
+kiner_abnormal <- get_tidy_audio_analysis("0quxTs9mzvU2NDcQH0CEWv")
+# Obi-Wan and Ahsoka Argue
+kiner_normal2 <- get_tidy_audio_analysis("5uKeLXKh6yrAniwa0vlg6s")
+```
+
+```{r, echo = FALSE, message = FALSE, figures-side2, fig.show="hold", out.width="50%"}
+kiner_abnormal %>%
+  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Cafe Coruscant") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+kiner_normal2 %>%
+  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Obi-Wan and Ahsoka Argue") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+```
+
+***
+Here you find two tempograms of tracks by Kevin Kiner, [Cafe Coruscant](https://open.spotify.com/track/0quxTs9mzvU2NDcQH0CEWv?si=ZA18P5-wTpGrJtCmVQxIbg) and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=qGYnIKQ8Saa6mkCdTqxCJA). The Window size is set to 2, and the hop-size is set to 1, cyclic is set to FALSE. I chose to focus on Kiner because all three composers use a lot of variance in tempo in general, but Kiner has a few songs with a main tempo. One of these songs is Cafe Coruscant, which can be seen as an outlier, while Obi-Wan and Ahsoka Argue is more a typical song. The tempograms reveal two striking features. The tempograms of Kiner overall are a mess because he varies the tempo a lot, an outlier such as Cafe Coruscant is therefore easy to recognize.  If you listen to Cafe Coruscant you wouldn't notice it is a Star Wars song, it sounds more like a song you listen to on the radio while driving. The song has a steady tempo with little variance and that is why you get such a good tempogram. The overall tempo of Cafe Coruscant is around 290 BPM. 
+
+### A new tab: Histogram of tempi
+```{r, echo=FALSE, message=FALSE}
+mean_tempo1 <- williams %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+mean_tempo2 <- kiner %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+
+mean_tempo3 <- goransson %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+
+combined %>%
+  ggplot(                     # Set up the plot.
+    aes(
+      x = tempo,
+      fill = category
+    )
+  ) +
+  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
+  geom_histogram(binwidth = 5) +
+  geom_vline(xintercept = 100.1241, linetype = "dashed", color = "#660066", size = 1) +
+  geom_vline(xintercept = 109.5362	, linetype = "dashed", color = "#f66d7a", size = 1) +
+  geom_vline(xintercept = 109.5042, linetype = "dashed", color = "#f6a97a", size = 1) +
+  geom_text(
+    angle = 90,
+    label="The Magic Tree", 
+    x=180,
+    y=5,
+  ) +
+  geom_text(
+    angle = 90,
+    label="Obi-Wan and Ahsoka Argue", 
+    x=50,
+    y=8,
+  ) +
+  theme_light() +
+  labs(
+    x = "Tempo",
+    y = "Amount of songs",
+    title = "Comparing Tempo Usage Composers"
+  ) +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12),
+    plot.background = element_rect(fill = "white")
+  ) 
+```
+
+***
+Here you find a histogram of the tempo usage per composer. As you can see, a tempo between around 75 and 85 are most used by all three the composers. Williams tempo is overall slower than that of Kiner and Goransson. The average tempo of Williams is around 100 BPM, while the average tempo of Kiner and Goransson is around 109 BPM. To illustrate some outliers, I added [The Magic Tree](https://open.spotify.com/track/0juw5DwTrpamc8ZJeQObm9?si=Yo7jf5VwSHaC6kEEumrLhA) by John Williams and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=YSwudcfAQEeAb6PP_RhezQ) by Kevin Kiner. Since I listened to both composers a lot in the last few weeks, the tempo difference for each of them felt weird. Williams' music is always calm and soothing, even in the battle parts, but The Magic Tree is faster and makes you more alert. In contrast Kiner's music always gives me a feeling that something terrible is about to happen, but not in Obi-Wan and Ahsoka Argue. 
+
+
+### A long time ago, in a galaxy far, far away...
+#### Introduction
+For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
+
+```{r picture, echo = F, fig.cap = "Fig 1: John Williams, Kevin Kiner and Ludwig Goransson", out.width = '50%', fig.align='center'}
+knitr::include_graphics("merged.jpg")
+```
+
+I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
+
+The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. Below you can find an overview of the selection.
+
+
+| John Williams              | Kevin Kiner        | Ludwig Goransson       |
+|----------------------------|--------------------|------------------------|
+| 5x The Rise of Sky Walker  | 10x Clone Wars I   | 5x The Mandalorian Ch1 |
+| 5x The Last Jedi           | 10x Clone Wars II  | 5x The Mandalorian Ch2 |
+| 5x The Force Awakens       | 10x Clone Wars III | 5x The Mandalorian Ch3 |
+| 5x The Phantom Menace      | 10x Clone Wars IV  | 5x The Mandalorian Ch4 |
+| 5x Revenge of the Sith     |                    | 5x The Mandalorian Ch5 |
+| 5x A New Hope              |                    | 5x The Mandalorian Ch6 |
+| 5x Attack of the Clones    |                    | 5x The Mandalorian Ch7 |
+| 5x The Empire Strikes Back |                    | 5x The Mandalorian Ch8 |
+
+
+A typical Star Wars movie composition is Duel of the Fates. Duel of the Fates emphasises the lower register of the strings with a repeated moving line, bright bursts of brass and the choir provides this piece with its glory and magnificence.The loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
+
+You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w).
+
+
+### Star Wars: Episode IV: A New Graph
+
+#### Comparing the Composers Regarding Acousticness, Instrumentalness, Danceability and Popularity
+```{r, echo = FALSE, message = FALSE, fig.align='center', cache=TRUE}
+
+# Plot acousticness vs instrumentalness, by composer
+
+tmpgraph <- combined %>%
+ ggplot(                          # Set up the plot.
+    aes(
+      x = instrumentalness,
+      y = acousticness,
+      size = track.popularity,
+      colour = danceability,
+      label = track.name           # Labels will be interactively visible.
+    )
+  ) +
+  geom_point() +                   # Scatter plot.
+  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
+  facet_wrap(~category) +           # Separate charts per country.
+  scale_x_continuous(              # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
+    minor_breaks = NULL            # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(              # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_viridis_c(          # Use the cividis palette
+    option = "A",                  # Qualitative set.
+    alpha = 0.8,                   # Include some transparency
+    guide = "none"
+  ) +
+  scale_size_continuous(           # Fine-tune the sizes of each point.
+    guide = "none"                 # Remove the legend for size.
+  ) +
+  theme_light() +                  # Use a simpler theme.
+  labs(                            # Make the titles nice.
+    x = "Instrumentalness",
+    y = "Acousticness"
+  ) +
+  theme(strip.background = element_rect(fill="#660066"))
+
+ggplotly(tmpgraph)
+```
+
+
+In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the danceability, with the lighter colors having a higher danceability score. The size of the dots matches the popularity of the track. The bigger the dot, the popular the track is. As you can see in the visualization, the music of John Williams stands out as compared to the other two composers, in three ways. First, Williams uses a lot of instrumental and acoustic music, while the music of Kiner and Goransson varies more in acousticness. All of the three composers have a high instrumentalness score, but the acousticness score varies. Second, William's music has a lower danceability score than Kiner's and Goransson's. William's tracks are darker, indicating lower danceability scores. The last way William stands out as compared to the other two composers is the popularity of the tracks. The size of the dots in Williams graph is the only one with really small dots. 
+
+One result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
+
+
+```{r, echo = FALSE, fig.align='center', cache=TRUE}
+
+combined %>%
+  ggplot(                     # Set up the plot.
+    aes(
+      x = track.popularity,
+      fill = category
+    )
+  ) +
+  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
+  geom_histogram(binwidth = 10, position = "dodge", alpha = 0.7) +
+  geom_vline(xintercept = 15.55, linetype = "dashed", color = "#660066", size = 1) +
+  geom_vline(xintercept = 30.65, linetype = "dashed", color = "#f6a97a", size = 1) +
+  geom_vline(xintercept = 36.75, linetype = "dashed", color = "#f6a97a", size = 1) +
+  theme_light() +
+  labs(
+    x = "Popularity",
+    y = "Amount of songs",
+    title = "Comparing track popularity"
+  ) +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+```
+
+### Star Wars: Episode VIII: The Last Visualization
+
+```{r, echo=FALSE, fig.align='center', cache=TRUE}
+library(compmus)
+
+test2 <-
+  get_tidy_audio_analysis("1fqsyRQVJReNyGNj1xZQX9") %>% 
+  select(segments) %>%
+  unnest(segments) %>%
+  select(start, duration, pitches)
+
+test2k <- test2 %>%
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
+  compmus_gather_chroma() %>% 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Kevin Kiner: Trace & Rafa") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+plot(test2k)
+
+```
+
+***
+In this visualization, you can see the chromagram of Kevin Kiner's "Trace & Rafa" from the Clone Wars series. A lot of different chroma values are used. At the start of the track, mostly A#, G# and C are used. Further into the track you can see that this switches, A#, G# and C are used fewer and G and F start to join. Something that stands out is the many different chroma values. At first, the song is very calm, contains high tones and has a slow rhythm. Then, after around 100 seconds, the music starts to become louder, with use of 'heavier' instruments. This change is clearly noticeable in the chromagram. 
+
+**I still have to work this out in more detail. I am not quite sure if this chromagram is useful for my analysis. I have to give this page more thought. **
+
+### Self-similarity matrices 
+
+```{r picture2, echo = F, out.width = '70%', fig.align='center'}
+knitr::include_graphics("johnchroma.png")
+knitr::include_graphics("kevinchroma.png")
+knitr::include_graphics("ludwigchroma.png")
+```
+
+***
+In this section we will look into different self-similarity matrices of three typical songs. The first track will be [The Throne Room and End Title](https://open.spotify.com/track/0KOYV2jgRZWLcLI94kiscs?si=OliynSCeS6CuTJejc77tHA) by John Williams. The second track will be [Ahsoka and the Martez Sisters](https://open.spotify.com/track/0hd8rk3WUINYVbdfsu1CqH?si=iDf143cuR_Ow1e0ccyVt7Q) by Kevin Kiner and the last track will be [Mando Rescue](https://open.spotify.com/track/2KDvhi03HTPCWXNMPvLtr9?si=d8yPSUHyQ5SMvMhgxyFZyQ) by Ludwig Goransson. The darker the colors are, the more similar the features. 
+
+For all of the self-similarity matrices applies that the segment is bars, the norm used is euclidean, the distance metric used is cosine and the summary statistic used is root mean square. **I will explain these graphs later**.
+
+### An old tab 2
+
+```{r, echo=FALSE}
+combined %>%
+  ggplot(                     # Set up the plot.
+    aes(
+      x = key_name,
+      fill = category
+    )
+  ) +
+  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
+  geom_bar(width = 1, position = position_dodge(preserve = "single"), alpha = 0.7) +
+  theme_light() +
+  labs(
+    x = "Key",
+    y = "Amount of songs",
+    title = "Comparing Key Usage Composers"
+  ) +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+```
+
+***
+One of the Spotify features is key, where every song is assigned the main key of the song. When talking about this graph, only the main keys of the songs are discussed. In this graph you can see how many times a composer used a certain key for their song. As you can see, Williams mostly uses A, D, F and G. Meanwhile Kiner mostly uses A#, C, D and F. Lastly Goransson mostly uses C, F and G. Key F is popular for all three of the composers, but the A key is only used by Williams. Williams varies more in the usage of keys in general. 
+
+
+### An old tab
 ```{r, echo = FALSE, message = FALSE}
 circshift <- function(v, n) {
   if (n == 0) v else c(tail(v, n), head(v, -n))
@@ -219,210 +528,5 @@ In the first graph you see that Williams almost only uses D-flat major. There ar
 In the second graph you see the shift from D-sharp minor through E-major to C-sharp minor. In the middle of the composition you see a huge increase in key usage. While listening to the song you find that in this part the pitch goes up and the music becomes more intense. After this the music slowly shifts towards C-sharp minor. Just like Duel of the Fates, the Spotify API is not entirely correct on this one. The Baby is written in the key C-major, but this is not being picked up by the Spotify API. 
 
 I chose the composition of The Baby and Duel of the Fates because they are very typical and famous for their composers. The keys of these songs are known and that is why I could see if the Spotify API correctly got the keys right.  
-
-### A new tab 2
-
-```{r, echo=FALSE}
-combined %>%
-  ggplot(                     # Set up the plot.
-    aes(
-      x = key_name,
-      fill = category
-    )
-  ) +
-  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
-  geom_bar(width = 1, position = position_dodge(preserve = "single"), alpha = 0.7) +
-  theme_light() +
-  labs(
-    x = "Key",
-    y = "Amount of songs",
-    title = "Comparing Key Usage Composers"
-  ) +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
-  )
-```
-
-***
-One of the Spotify features is key, where every song is assigned the main key of the song. When talking about this graph, only the main keys of the songs are discussed. In this graph you can see how many times a composer used a certain key for their song. As you can see, Williams mostly uses A, D, F and G. Meanwhile Kiner mostly uses A#, C, D and F. Lastly Goransson mostly uses C, F and G. Key F is popular for all three of the composers, but the A key is only used by Williams. Williams varies more in the usage of keys in general. 
-
-
-
-### A long time ago, in a galaxy far, far away...
-#### Introduction
-For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
-
-```{r picture, echo = F, fig.cap = "Fig 1: John Williams, Kevin Kiner and Ludwig Goransson", out.width = '50%', fig.align='center'}
-knitr::include_graphics("merged.jpg")
-```
-
-I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
-
-The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. Below you can find an overview of the selection.
-
-
-| John Williams              | Kevin Kiner        | Ludwig Goransson       |
-|----------------------------|--------------------|------------------------|
-| 5x The Rise of Sky Walker  | 10x Clone Wars I   | 5x The Mandalorian Ch1 |
-| 5x The Last Jedi           | 10x Clone Wars II  | 5x The Mandalorian Ch2 |
-| 5x The Force Awakens       | 10x Clone Wars III | 5x The Mandalorian Ch3 |
-| 5x The Phantom Menace      | 10x Clone Wars IV  | 5x The Mandalorian Ch4 |
-| 5x Revenge of the Sith     |                    | 5x The Mandalorian Ch5 |
-| 5x A New Hope              |                    | 5x The Mandalorian Ch6 |
-| 5x Attack of the Clones    |                    | 5x The Mandalorian Ch7 |
-| 5x The Empire Strikes Back |                    | 5x The Mandalorian Ch8 |
-
-
-A typical Star Wars movie composition is Duel of the Fates. Duel of the Fates emphasises the lower register of the strings with a repeated moving line, bright bursts of brass and the choir provides this piece with its glory and magnificence.The loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
-
-You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w).
-
-
-### Star Wars: Episode IV: A New Graph
-
-#### Comparing the Composers Regarding Acousticness, Instrumentalness, Danceability and Popularity
-```{r, echo = FALSE, message = FALSE, fig.align='center', cache=TRUE}
-
-# Plot acousticness vs instrumentalness, by composer
-
-tmpgraph <- combined %>%
- ggplot(                          # Set up the plot.
-    aes(
-      x = instrumentalness,
-      y = acousticness,
-      size = track.popularity,
-      colour = danceability,
-      label = track.name           # Labels will be interactively visible.
-    )
-  ) +
-  geom_point() +                   # Scatter plot.
-  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
-  facet_wrap(~category) +           # Separate charts per country.
-  scale_x_continuous(              # Fine-tune the x axis.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
-    minor_breaks = NULL            # Remove 'minor' grid-lines.
-  ) +
-  scale_y_continuous(              # Fine-tune the y axis in the same way.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),
-    minor_breaks = NULL
-  ) +
-  scale_colour_viridis_c(          # Use the cividis palette
-    option = "A",                  # Qualitative set.
-    alpha = 0.8,                   # Include some transparency
-    guide = "none"
-  ) +
-  scale_size_continuous(           # Fine-tune the sizes of each point.
-    guide = "none"                 # Remove the legend for size.
-  ) +
-  theme_light() +                  # Use a simpler theme.
-  labs(                            # Make the titles nice.
-    x = "Instrumentalness",
-    y = "Acousticness"
-  ) +
-  theme(strip.background = element_rect(fill="#660066"))
-
-ggplotly(tmpgraph)
-```
-
-
-In the visualization above you can see the acousticness and instrumentalness plotted against each other. The color of the dots matches the danceability, with the lighter colors having a higher danceability score. The size of the dots matches the popularity of the track. The bigger the dot, the popular the track is. As you can see in the visualization, the music of John Williams stands out as compared to the other two composers, in three ways. First, Williams uses a lot of instrumental and acoustic music, while the music of Kiner and Goransson varies more in acousticness. All of the three composers have a high instrumentalness score, but the acousticness score varies. Second, William's music has a lower danceability score than Kiner's and Goransson's. William's tracks are darker, indicating lower danceability scores. The last way William stands out as compared to the other two composers is the popularity of the tracks. The size of the dots in Williams graph is the only one with really small dots. 
-
-One result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
-
-
-```{r, echo = FALSE, fig.align='center', cache=TRUE}
-
-combined %>%
-  ggplot(                     # Set up the plot.
-    aes(
-      x = track.popularity,
-      fill = category
-    )
-  ) +
-  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
-  geom_histogram(binwidth = 10, position = "dodge", alpha = 0.7) +
-  geom_vline(xintercept = 15.55, linetype = "dashed", color = "#660066", size = 1) +
-  geom_vline(xintercept = 30.65, linetype = "dashed", color = "#f6a97a", size = 1) +
-  geom_vline(xintercept = 36.75, linetype = "dashed", color = "#f6a97a", size = 1) +
-  theme_light() +
-  labs(
-    x = "Popularity",
-    y = "Amount of songs",
-    title = "Comparing track popularity"
-  ) +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
-  )
-
-```
-
-### Star Wars: Episode VIII: The Last Visualization
-
-```{r, echo=FALSE, fig.align='center', cache=TRUE}
-library(compmus)
-
-test2 <-
-  get_tidy_audio_analysis("1fqsyRQVJReNyGNj1xZQX9") %>% 
-  select(segments) %>%
-  unnest(segments) %>%
-  select(start, duration, pitches)
-
-test2k <- test2 %>%
-  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
-  compmus_gather_chroma() %>% 
-  ggplot(
-    aes(
-      x = start + duration / 2,
-      width = duration,
-      y = pitch_class,
-      fill = value
-    )
-  ) +
-  geom_tile() +
-  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
-  theme_minimal() +
-  scale_fill_viridis_c(option="magma") +
-  ggtitle("Kevin Kiner: Trace & Rafa") +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
-  )
-
-plot(test2k)
-
-```
-
-***
-In this visualization, you can see the chromagram of Kevin Kiner's "Trace & Rafa" from the Clone Wars series. A lot of different chroma values are used. At the start of the track, mostly A#, G# and C are used. Further into the track you can see that this switches, A#, G# and C are used fewer and G and F start to join. Something that stands out is the many different chroma values. At first, the song is very calm, contains high tones and has a slow rhythm. Then, after around 100 seconds, the music starts to become louder, with use of 'heavier' instruments. This change is clearly noticeable in the chromagram. 
-
-**I still have to work this out in more detail. I am not quite sure if this chromagram is useful for my analysis. I have to give this page more thought. **
-
-### Self-similarity matrices 
-
-```{r picture2, echo = F, out.width = '70%', fig.align='center'}
-knitr::include_graphics("johnchroma.png")
-knitr::include_graphics("kevinchroma.png")
-knitr::include_graphics("ludwigchroma.png")
-```
-
-***
-In this section we will look into different self-similarity matrices of three typical songs. The first track will be [The Throne Room and End Title](https://open.spotify.com/track/0KOYV2jgRZWLcLI94kiscs?si=OliynSCeS6CuTJejc77tHA) by John Williams. The second track will be [Ahsoka and the Martez Sisters](https://open.spotify.com/track/0hd8rk3WUINYVbdfsu1CqH?si=iDf143cuR_Ow1e0ccyVt7Q) by Kevin Kiner and the last track will be [Mando Rescue](https://open.spotify.com/track/2KDvhi03HTPCWXNMPvLtr9?si=d8yPSUHyQ5SMvMhgxyFZyQ) by Ludwig Goransson. The darker the colors are, the more similar the features. 
-
-For all of the self-similarity matrices applies that the segment is bars, the norm used is euclidean, the distance metric used is cosine and the summary statistic used is root mean square. **I will explain these graphs later**.
-
-
 
 
