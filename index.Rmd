@@ -1,7 +1,7 @@
 ---
 title: "Star Wars Composers Analysis"
 author: "Dionne Gantzert"
-date: "2/22/2021"
+date: "3/28/2021"
 output:
   flexdashboard::flex_dashboard:
     storyboard: true
@@ -46,109 +46,23 @@ combined <-
 
 ```
 
-### A new tab: Kevin Kiner tempograms
-```{r, echo = FALSE, message = FALSE}
-# Cafe Corescant by Kevin Kiner
-kiner_abnormal <- get_tidy_audio_analysis("0quxTs9mzvU2NDcQH0CEWv")
-# Obi-Wan and Ahsoka Argue
-kiner_normal2 <- get_tidy_audio_analysis("5uKeLXKh6yrAniwa0vlg6s")
-```
-
-```{r, echo = FALSE, message = FALSE, figures-side2, fig.show="hold", out.width="50%"}
-kiner_abnormal %>%
-  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_minimal() +
-  scale_fill_viridis_c(option="magma") +
-  ggtitle("Cafe Coruscant") +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
-  )
-
-kiner_normal2 %>%
-  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_minimal() +
-  scale_fill_viridis_c(option="magma") +
-  ggtitle("Obi-Wan and Ahsoka Argue") +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12)
-  )
+### ~~The Magic Tree~~ The Magic Forest
+```{r pictur, echo = F, out.width = '50%', fig.align='center'}
+knitr::include_graphics("randomforest3.png") # accuracy: 0.8611111111111112
 ```
 
 ***
-Here you find two tempograms of tracks by Kevin Kiner, [Cafe Coruscant](https://open.spotify.com/track/0quxTs9mzvU2NDcQH0CEWv?si=ZA18P5-wTpGrJtCmVQxIbg) and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=qGYnIKQ8Saa6mkCdTqxCJA). The Window size is set to 2, and the hop-size is set to 1, cyclic is set to FALSE. I chose to focus on Kiner because all three composers use a lot of variance in tempo in general, but Kiner has a few songs with a main tempo. One of these songs is Cafe Coruscant, which can be seen as an outlier, while Obi-Wan and Ahsoka Argue is more a typical song. The tempograms reveal two striking features. The tempograms of Kiner overall are a mess because he varies the tempo a lot, an outlier such as Cafe Coruscant is therefore easy to recognize.  If you listen to Cafe Coruscant you wouldn't notice it is a Star Wars song, it sounds more like a song you listen to on the radio while driving. The song has a steady tempo with little variance and that is why you get such a good tempogram. The overall tempo of Cafe Coruscant is around 290 BPM. 
+In this graph you find the feature importances as computed by the Random Forest Classifier. The accuracy is around 0.86, which is very good actually. The results of the classifier are in line with my own results. It doesn't surprise me at all that popularity and duration are used to classify the composers, since Williams is standing out on these two features. As seen in this portfolio, Williams popularity is considerably less as compared to Kiner and Goransson. Therefore, it is possible to classify Williams' music by only considering the popularity of the tracks. The duration of Williams's music is also longer in general as compared to the other two composers. The speechiness surprised me because I didn't notice any outlier there, so I will look into this again to see if the classifier is correct. Acousticness is also a feature where Williams stands out as you have seen in one of the other tabs. In general I think we can say that the Random Forest Classifier did a great job in finding the important features to distinguish Williams' music from the others, but not to distinguish all three of them.
 
-### A new tab: Histogram of tempi
-```{r, echo=FALSE, message=FALSE}
-mean_tempo1 <- williams %>%
-  summarise(
-    mean_tempo = mean(tempo)
-  )
-mean_tempo2 <- kiner %>%
-  summarise(
-    mean_tempo = mean(tempo)
-  )
-
-mean_tempo3 <- goransson %>%
-  summarise(
-    mean_tempo = mean(tempo)
-  )
-
-combined %>%
-  ggplot(                     # Set up the plot.
-    aes(
-      x = tempo,
-      fill = category
-    )
-  ) +
-  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
-  geom_histogram(binwidth = 5) +
-  geom_vline(xintercept = 100.1241, linetype = "dashed", color = "#660066", size = 1) +
-  geom_vline(xintercept = 109.5362	, linetype = "dashed", color = "#f66d7a", size = 1) +
-  geom_vline(xintercept = 109.5042, linetype = "dashed", color = "#f6a97a", size = 1) +
-  geom_text(
-    angle = 90,
-    label="The Magic Tree", 
-    x=180,
-    y=5,
-  ) +
-  geom_text(
-    angle = 90,
-    label="Obi-Wan and Ahsoka Argue", 
-    x=50,
-    y=8,
-  ) +
-  theme_light() +
-  labs(
-    x = "Tempo",
-    y = "Amount of songs",
-    title = "Comparing Tempo Usage Composers"
-  ) +
-  theme_update(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    text = element_text(family = "Bookman"),
-    title = element_text(color = "gray25"),
-    plot.caption = element_text(color = "gray30"),
-    plot.subtitle = element_text(size = 12),
-    plot.background = element_rect(fill = "white")
-  ) 
+### A new tab:
+```{r pictr, echo = FALSE, fig.show="hold", out.width = '50%'}
+knitr::include_graphics("confused41.png") # accuracy: 0.41
+knitr::include_graphics("confused412.png") # accuracy: 0.41
 ```
 
 ***
-Here you find a histogram of the tempo usage per composer. As you can see, a tempo between around 75 and 85 are most used by all three the composers. Williams tempo is overall slower than that of Kiner and Goransson. The average tempo of Williams is around 100 BPM, while the average tempo of Kiner and Goransson is around 109 BPM. To illustrate some outliers, I added [The Magic Tree](https://open.spotify.com/track/0juw5DwTrpamc8ZJeQObm9?si=Yo7jf5VwSHaC6kEEumrLhA) by John Williams and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=YSwudcfAQEeAb6PP_RhezQ) by Kevin Kiner. Since I listened to both composers a lot in the last few weeks, the tempo difference for each of them felt weird. Williams' music is always calm and soothing, even in the battle parts, but The Magic Tree is faster and makes you more alert. In contrast Kiner's music always gives me a feeling that something terrible is about to happen, but not in Obi-Wan and Ahsoka Argue. 
+Here you find the confusion matrices of the linear classifier. As you can see, it was easiest for the classifier to distinguish Williams' music than to distinguish Kiner's or Goransson's. This is ofcourse because Williams is really standing out in the Spotify features. The accuracy of the linear classifier with all its features was bad, around 0.30. After I selected the, in my opinion, important features the accuracy is still bad, but a little better around 0.41. This is mostly because of Goransson's and Kiner's music which are hard to distinguish. I actually don't think it is possible to improve these results because the data of Goransson and Kiner are very similar, which makes it harder to classify them. If I listen to their music I can partly distinguish Goransson's music because I watched The Mandalorian, but that is around it. There is a lot more 'war music' going on in Kiner's tracks, but Spotify didn't capture this in its features. 
+
 
 
 ### A long time ago, in a galaxy far, far away...
@@ -184,7 +98,7 @@ You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUk
 ### Star Wars: Episode IV: A New Graph
 
 #### Comparing the Composers Regarding Acousticness, Instrumentalness, Danceability and Popularity
-```{r, echo = FALSE, message = FALSE, fig.align='center', cache=TRUE}
+```{r, echo = FALSE, message = FALSE, fig.align='center'}
 
 # Plot acousticness vs instrumentalness, by composer
 
@@ -235,7 +149,7 @@ In the visualization above you can see the acousticness and instrumentalness plo
 One result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. It would be very interesting to find out why Goransson's music is more popular, but therefore I need more information than the Spotify API can provide. 
 
 
-```{r, echo = FALSE, fig.align='center', cache=TRUE}
+```{r, echo = FALSE, fig.align='center'}
 
 combined %>%
   ggplot(                     # Set up the plot.
@@ -267,8 +181,7 @@ combined %>%
 
 ### Star Wars: Episode VIII: The Last Visualization
 
-```{r, echo=FALSE, fig.align='center', cache=TRUE}
-library(compmus)
+```{r, echo=FALSE, fig.align='center'}
 
 test2 <-
   get_tidy_audio_analysis("1fqsyRQVJReNyGNj1xZQX9") %>% 
@@ -529,4 +442,107 @@ In the second graph you see the shift from D-sharp minor through E-major to C-sh
 
 I chose the composition of The Baby and Duel of the Fates because they are very typical and famous for their composers. The keys of these songs are known and that is why I could see if the Spotify API correctly got the keys right.  
 
+### An old tab: Kevin Kiner tempograms
+```{r, echo = FALSE, message = FALSE}
+# Cafe Corescant by Kevin Kiner
+kiner_abnormal <- get_tidy_audio_analysis("0quxTs9mzvU2NDcQH0CEWv")
+# Obi-Wan and Ahsoka Argue
+kiner_normal2 <- get_tidy_audio_analysis("5uKeLXKh6yrAniwa0vlg6s")
+```
+
+```{r, echo = FALSE, message = FALSE, figures-side2, fig.show="hold", out.width="50%"}
+kiner_abnormal %>%
+  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Cafe Coruscant") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+kiner_normal2 %>%
+  tempogram(window_size = 2, hop_size = 1, cyclic = FALSE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_minimal() +
+  scale_fill_viridis_c(option="magma") +
+  ggtitle("Obi-Wan and Ahsoka Argue") +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12)
+  )
+```
+
+***
+Here you find two tempograms of tracks by Kevin Kiner, [Cafe Coruscant](https://open.spotify.com/track/0quxTs9mzvU2NDcQH0CEWv?si=ZA18P5-wTpGrJtCmVQxIbg) and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=qGYnIKQ8Saa6mkCdTqxCJA). The Window size is set to 2, and the hop-size is set to 1, cyclic is set to FALSE. I chose to focus on Kiner because all three composers use a lot of variance in tempo in general, but Kiner has a few songs with a main tempo. One of these songs is Cafe Coruscant, which can be seen as an outlier, while Obi-Wan and Ahsoka Argue is more a typical song. The tempograms reveal two striking features. The tempograms of Kiner overall are a mess because he varies the tempo a lot, an outlier such as Cafe Coruscant is therefore easy to recognize.  If you listen to Cafe Coruscant you wouldn't notice it is a Star Wars song, it sounds more like a song you listen to on the radio while driving. The song has a steady tempo with little variance and that is why you get such a good tempogram. The overall tempo of Cafe Coruscant is around 290 BPM. 
+
+### A new tab: Histogram of tempi
+```{r, echo=FALSE, message=FALSE}
+mean_tempo1 <- williams %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+mean_tempo2 <- kiner %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+
+mean_tempo3 <- goransson %>%
+  summarise(
+    mean_tempo = mean(tempo)
+  )
+
+combined %>%
+  ggplot(                     # Set up the plot.
+    aes(
+      x = tempo,
+      fill = category
+    )
+  ) +
+  scale_fill_manual(values = c("#660066", "#f66d7a", "#f6a97a")) +
+  geom_histogram(binwidth = 5) +
+  geom_vline(xintercept = 100.1241, linetype = "dashed", color = "#660066", size = 1) +
+  geom_vline(xintercept = 109.5362	, linetype = "dashed", color = "#f66d7a", size = 1) +
+  geom_vline(xintercept = 109.5042, linetype = "dashed", color = "#f6a97a", size = 1) +
+  geom_text(
+    angle = 90,
+    label="The Magic Tree", 
+    x=180,
+    y=5,
+  ) +
+  geom_text(
+    angle = 90,
+    label="Obi-Wan and Ahsoka Argue", 
+    x=50,
+    y=8,
+  ) +
+  theme_light() +
+  labs(
+    x = "Tempo",
+    y = "Amount of songs",
+    title = "Comparing Tempo Usage Composers"
+  ) +
+  theme_update(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    text = element_text(family = "Bookman"),
+    title = element_text(color = "gray25"),
+    plot.caption = element_text(color = "gray30"),
+    plot.subtitle = element_text(size = 12),
+    plot.background = element_rect(fill = "white")
+  ) 
+```
+
+***
+Here you find a histogram of the tempo usage per composer. As you can see, a tempo between around 75 and 85 are most used by all three the composers. Williams tempo is overall slower than that of Kiner and Goransson. The average tempo of Williams is around 100 BPM, while the average tempo of Kiner and Goransson is around 109 BPM. To illustrate some outliers, I added [The Magic Tree](https://open.spotify.com/track/0juw5DwTrpamc8ZJeQObm9?si=Yo7jf5VwSHaC6kEEumrLhA) by John Williams and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=YSwudcfAQEeAb6PP_RhezQ) by Kevin Kiner. Since I listened to both composers a lot in the last few weeks, the tempo difference for each of them felt weird. Williams' music is always calm and soothing, even in the battle parts, but The Magic Tree is faster and makes you more alert. In contrast Kiner's music always gives me a feeling that something terrible is about to happen, but not in Obi-Wan and Ahsoka Argue. 
 
