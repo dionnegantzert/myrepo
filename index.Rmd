@@ -1,7 +1,7 @@
 ---
 title: "Star Wars Composers Analysis"
 author: "Dionne Gantzert"
-date: "3/28/2021"
+date: "3/29/2021"
 output:
   flexdashboard::flex_dashboard:
     storyboard: true
@@ -57,16 +57,13 @@ Background
 =========================================
 
 #### A long time ago, in a galaxy far, far away... 
-For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, forty songs for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to distinguish between them. 
+For many people, Star Wars has been one of the greatest movie series of all time. And even if you haven’t watched it, you certainly know some of the music it contains. Over the years, the Star Wars franchise expanded into various movies and television series, such as the Mandalorian, Clone Wars and Star Wars Rebels. In this portfolio, a distinction is made between the music of three major Star Wars series. These series are The Star Wars movies, composed by John Williams, the Clone Wars series, composed by Kevin Kiner, and the Mandalorian series, composed by Ludwig Goransson. The corpus exists of three times forty songs, forty songs for each of these three composers. I think it would be interesting to look into the differences between their music and to see if it is possible to identify the composer based on the song features.
 
 ```{r picture, echo = F, fig.cap = "Fig 1: John Williams, Kevin Kiner and Ludwig Goransson", out.width = '50%', fig.align='center'}
 knitr::include_graphics("merged.jpg")
 ```
 
-I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams is more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic.
-
-The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. Below you can find an overview of the selection.
-
+I expect that the difference between Goransson and Williams is the most noticeable, because Star Wars is a space opera while the Mandalorian defines itself as a space Western. The differences between Kiner and Williams and Kiner and Goransson are more difficult to find, and thus far no one has specifically looked into it. While I was listening to the music myself I found that Kiner’s music felt more powerful and energetic than the music of the other two composers. The corpus tries to cover every movie or episode, but since a movie contains more music than a single episode it was hard to select the right songs. Therefore, I used 5 songs from every Star Wars movie, except for one. This was to maintain an equally divided song selection between the composers. From the Clone Wars series, 10 songs from every season were selected and for the Mandalorian I selected 5 songs per episode of season 1. The songs were randomly selected to avoid a certain bias. Below you can find an overview of the selection.
 
 | John Williams              | Kevin Kiner        | Ludwig Goransson       |
 |----------------------------|--------------------|------------------------|
@@ -79,8 +76,9 @@ The corpus tries to cover every movie or episode, but since a movie contains mor
 | 5x Attack of the Clones    |                    | 5x The Mandalorian Ch7 |
 | 5x The Empire Strikes Back |                    | 5x The Mandalorian Ch8 |
 
+A typical Star Wars movie composition is Duel of the Fates. Duel of the Fates emphasises the lower register of the strings with a repeated moving line, bright bursts of brass and the choir provides this piece with its glory and magnificence.The loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. An outlier is Cafe Coruscant from Kiner, which sounds more like a normal radio song than a Star Wars song. In this portfolio we will look into a few more outliers. 
 
-A typical Star Wars movie composition is Duel of the Fates. Duel of the Fates emphasises the lower register of the strings with a repeated moving line, bright bursts of brass and the choir provides this piece with its glory and magnificence.The loudness and energy of the song is a recurring theme in the Star Wars movies. For the Mandalorian, “The Mandalorian” is a very typical song because it is one of the most similar songs as compared to the Star Wars movies. 
+The main limitation of this analysis and corpus is that there is little to compare on the individual song level. The composers all have totally different songs, they did not use a theme from another composer or something like that. Therefore looking at the individual song level is not really reliable, it is similar as comparing apples with oranges. Also not all songs are covered in this corpus, meaning that I could accidentally left out important outliers or typical songs. 
 
 You can find the exact corpus [here](https://open.spotify.com/playlist/0kojyfPUkAer4jsf4RSzDH?si=ryL0pYpGSxebBUsXJ38I-w).
 
@@ -202,9 +200,9 @@ hist +
 ```
 
 ***
-One result that surprised me in this data set was the popularity of the tracks. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. The dotted lines you see in the graph are the average popularity score per composer. 
+One result that surprised me in this data set was the popularity of the tracks. The dotted lines you see in the graph are the average popularity score per composer. The Star Wars movies composed by Williams are a lot older than the Star Wars series composed by Kiner and Goransson. Therefore, it would be logical to think that more people watched the movies and thus listened to the older songs (i.e. the older songs would be more popular). Apparently, my intuition was wrong about this since most of the songs composed by Williams are not popular at all. In the visualization below you can see that Williams got the highest amount of songs with a popularity of zero. Goransson on the other hand, did a great job with the highest popularity scores. If the popularity of a song is 30 or above, there is a 40/59 chance that it is Goransson, which accounts for 67%. 
 
-### Speechiness look
+### Sing or sing not, there is no speech
 ```{r}
 xValue <- 1:40
 w <- williams[with(williams, order(speechiness)), ]
@@ -826,7 +824,7 @@ kiner_normal2 %>%
 ```
 
 ***
-Here you find two tempograms of tracks by Kevin Kiner, [Cafe Coruscant](https://open.spotify.com/track/0quxTs9mzvU2NDcQH0CEWv?si=ZA18P5-wTpGrJtCmVQxIbg) and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=qGYnIKQ8Saa6mkCdTqxCJA). The Window size is set to 2, and the hop-size is set to 1, cyclic is set to TRUE. I chose to focus on Kiner because all three composers use a lot of variance in tempo in general, but Kiner has a few songs with a main tempo. One of these songs is Cafe Coruscant, which can be seen as an outlier, while Obi-Wan and Ahsoka Argue is more a typical song. The tempograms of Kiner overall are a mess because he varies the tempo a lot, an outlier such as Cafe Coruscant is therefore easy to recognize.  The song has a steady tempo with little variance and that is why you get such a good tempogram. The overall tempo of Cafe Coruscant is between 140 and 150 BPM. This matches with the Spotify track-level tempo of Cafe Coruscant, which is 143.905 BPM. However, if you look at Obi-Wan and Ahsoka Argue, the tempogram is all over the place. The tempogram starts at 80 BPM, while according to Spotify, the tempo of the song is 47.996 BPM. It isn't then suprising that the tempo confidence of this song was 0.01, while the tempo confidence of Cafe Coruscant was 0.464. 
+Here you find two cyclic tempograms of tracks by Kevin Kiner, [Cafe Coruscant](https://open.spotify.com/track/0quxTs9mzvU2NDcQH0CEWv?si=ZA18P5-wTpGrJtCmVQxIbg) and [Obi-Wan and Ahsoka Argue](https://open.spotify.com/track/5uKeLXKh6yrAniwa0vlg6s?si=qGYnIKQ8Saa6mkCdTqxCJA). The Window size is set to 2, and the hop-size is set to 1, otherwise my computer crashed. I chose to focus on Kiner because all three composers use a lot of variance in tempo in general, but Kiner has a few songs with a main tempo. One of these songs is Cafe Coruscant, which can be seen as an outlier, while Obi-Wan and Ahsoka Argue is more a typical song. The tempograms of Kiner overall are a mess because he varies the tempo a lot, an outlier such as Cafe Coruscant is therefore easy to recognize.  The song has a steady tempo with little variance and that is why you get this tempogram, which is a little bit better. The overall tempo of Cafe Coruscant is between 140 and 150 BPM. This matches with the Spotify track-level tempo of Cafe Coruscant, which is 143.905 BPM. However, if you look at Obi-Wan and Ahsoka Argue, the tempogram is all over the place. The tempogram starts at 80 BPM, while according to Spotify, the tempo of the song is 47.996 BPM. It isn't then surprising that the tempo confidence of this song was 0.01, while the tempo confidence of Cafe Coruscant was 0.464. 
 
 **Important note:** I tried the tempograms with multiple songs to make sure that I didn't choose the wrong songs to compare, but it turned out that all of them were horrible. Therefore I stayed with my initial choice to choose Obi-Wan and Ahsoka Argue. 
 
@@ -919,11 +917,31 @@ In this graph you find the feature importance as computed by the Random Forest C
 ### Evaluation of our Randomforest Classifier 
 ```{r pictr, echo = FALSE, fig.show="hold", out.width = '50%'}
 knitr::include_graphics("confusedfinal.png") # 0.9166666666666666
-knitr::include_graphics("confusedfinal.png") # 0.9166666666666666
+knitr::include_graphics("confusedfinal2.png") # 0.9166666666666666
 ```
 
 ***
 Here you find the confusion matrices of the randomforest classifier. As you can see, it was easiest for the classifier to distinguish Goransson's music. This surprises me since I feel like Williams is standing out way more than the other two so you would think that he is the easiest to classify. The accuracy of the randomforest classifier with all its features was good at first, around 0.73. After I selected the, in my opinion, important features the accuracy went way up. These important features are the one you saw on the randomforest tab. I mostly deselected ID's, names, images and all those other features that measured when I added the song to the playlist. I actually don't think it is possible to improve these results because the data of Goransson and Kiner are very similar, which makes it harder to classify them. If I listen to their music I can partly distinguish Goransson's music because I watched The Mandalorian, but that is around it. There is a lot more 'war music' going on in Kiner's tracks, but Spotify didn't capture this in its features. Overall I think the randomforest classifier did a great job.
 
-Contribution {.storyboard}
+Contribution
 =========================================
+#### The Finale
+
+The goal of this analysis was to look into the differences between the composers of Star Wars music and to see if it is possible to distinguish their music from each other. This is definitely possible, mostly based on track-level features. As we have seen in the randomforest classifier, based on namely the Acousticness, Duration, Speechiness and Popularity, it is possible to identify the composer. 
+
+**Williams** stands out in this analysis, he uses a lot of acousticness in his compositions, and is the least popular composer according to spotify. His pitch and timbre cepstrograms are usually a mess, as compared to Kiner and Goransson. Williams varies a lot in key, and his songs usually last the longest. Lastly, most of the tempo he uses in his compositions are below 100 BPM. 
+
+**Kiner** constantly falls in between the two composers. Based on the track-level features there is little to tell about Kiner, but when looking at the music structure, most of Kiner's songs are easily divided into parts. As compared to the other two composers, Kiner uses the key C the most. Kiner also varies more in tempo usage, having composed the slowest song and the fastest. Kiner is also the only composer who has a song that doesn't sound like a Star Wars song and where the tempo can actually be identified using a tempogram. 
+
+**Goransson** stands out on some features. Goransson has the highest popularity score. If the popularity is 30 or above, there is a 67% chance that it is a song composed by Goransson. He also stands out in speechiness. If the speechiness is 0.5 or above, there is a 76% chance it is a song composed by Goransson. The music structure of Goransson overall is not very good, but also not very bad. He falls in between Williams (bad structure) and Kiner (good structure). Regarding key, Goransson tends to go towards F and G. Goransson's music is very average if you look at tempo and duration. The mean tempo is the same as the mean tempo of Kiner, and duration falls between Williams and Kiner. 
+
+In our classifier tab we saw that Goransson was identified 92% correctly, Kiner 91% and Williams 90%%. These are all very good estimations. These conclusions are mostly interesting for fans of the Star Wars franchise. I don't think there is a certain social relevance, but it is fun to see the differences between the composers. 
+
+```{r picture5, echo = F, fig.cap = "Fig 2: Star Wars Rebels", out.width = '50%', fig.align='center'}
+knitr::include_graphics("rebels.jpg") 
+```
+
+For further exploration one could analyse the different Star Wars series by also adding the Star Wars Rebels series composed by Kevin Kiner. This would allow for adding all the Star Wars movies and both seasons of The Mandalorian. 
+
+
+
